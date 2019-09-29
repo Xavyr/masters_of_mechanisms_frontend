@@ -8,7 +8,7 @@ const App: React.FC = () => {
       <header className="App-header">
         <img src={tony} className="App-logo" alt="tony" />
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+          Edit <code>src/App.tsx</code> THIS SIS OWRKING
         </p>
         <a
           className="App-link"
