@@ -4,7 +4,15 @@ import "../App.css";
 
 export const Home: React.FC = ({}) => {
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        width: "100%",
+        alignItems: "center"
+      }}
+    >
       <img
         src={lightbulbs}
         alt="lightbulbs-logo"
@@ -35,7 +43,9 @@ export const Home: React.FC = ({}) => {
             flexDirection: "row",
             justifyContent: "space-around",
             marginTop: 100,
-            marginBottom: 10
+            marginBottom: 10,
+            marginLeft: 10,
+            marginRight: 10
           }}
         >
           <button
