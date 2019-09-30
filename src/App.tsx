@@ -43,11 +43,10 @@ const App = () => {
 
   return (
     <div>
-      {/* <WindowDimensionsProvider> */}
       <BrowserRouter>
         <ApolloProvider client={client}>
           <ApolloHooksProvider client={client}>
-            <Navbar />
+            {/* <Navbar /> */}
             <Route path="/home" component={Home} />
             <Route path="/about" component={About} />
             <Route exact path="/titans" component={Titans} />
@@ -57,8 +56,6 @@ const App = () => {
           </ApolloHooksProvider>
         </ApolloProvider>
       </BrowserRouter>
-
-      {/* </WindowDimensionsProvider> */}
     </div>
   );
 };
