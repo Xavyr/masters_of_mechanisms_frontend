@@ -47,7 +47,7 @@ const App = () => {
         <ApolloProvider client={client}>
           <ApolloHooksProvider client={client}>
             {/* <Navbar /> */}
-            <Route path="/" component={Home} />
+            <Route exact path="/" component={Home} />
             <Route path="/about" component={About} />
             <Route exact path="/titans" component={Titans} />
             <Route path="/titans/:name" component={Titan} />
