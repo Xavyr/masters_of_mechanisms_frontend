@@ -28,15 +28,7 @@ export const Home: React.FC = ({}) => {
       >
         Break the block and <br /> find your inspiration.
       </h1>
-      <div
-        style={{
-          position: "fixed",
-          left: 0,
-          bottom: 0,
-          width: "100%",
-          textAlign: "center"
-        }}
-      >
+      <div>
         <div
           style={{
             display: "flex",
@@ -51,7 +43,9 @@ export const Home: React.FC = ({}) => {
               backgroundColor: "#979797",
               color: "white",
               borderRadius: 10,
-              padding: 20
+              padding: 20,
+              fontFamily: "Roboto",
+              fontSize: "17px"
             }}
           >
             Home
@@ -61,7 +55,9 @@ export const Home: React.FC = ({}) => {
               backgroundColor: "#979797",
               color: "white",
               borderRadius: 10,
-              padding: 20
+              padding: 20,
+              fontFamily: "Roboto",
+              fontSize: "17px"
             }}
           >
             About
@@ -71,7 +67,9 @@ export const Home: React.FC = ({}) => {
               backgroundColor: "#979797",
               color: "white",
               borderRadius: 10,
-              padding: 20
+              padding: 20,
+              fontFamily: "Roboto",
+              fontSize: "17px"
             }}
           >
             Titans
@@ -81,7 +79,9 @@ export const Home: React.FC = ({}) => {
               backgroundColor: "#979797",
               color: "white",
               borderRadius: 10,
-              padding: 20
+              padding: 20,
+              fontFamily: "Roboto",
+              fontSize: "17px"
             }}
           >
             Data Visualizations
@@ -91,7 +91,9 @@ export const Home: React.FC = ({}) => {
               backgroundColor: "#979797",
               color: "white",
               borderRadius: 10,
-              padding: 20
+              padding: 20,
+              fontFamily: "Roboto",
+              fontSize: "17px"
             }}
           >
             Data Entry
