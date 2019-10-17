@@ -21,9 +21,9 @@ import { DataVisualizations } from "./components/DataVisualizations";
 const cache = new InMemoryCache();
 const link = new HttpLink({
   //Deployed URL
-  uri: "https://savvy-mantis-253123.appspot.com/",
+  //uri: "https://savvy-mantis-253123.appspot.com/",
   //Local url
-  //uri: "http://localhost:8000/",
+  uri: "http://localhost:8000/",
   fetch
 });
 

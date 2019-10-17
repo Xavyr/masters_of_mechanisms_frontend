@@ -4,6 +4,38 @@ import gql from "graphql-tag";
 import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/react-hooks";
 
+import { TextField, Button, Paper } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+
+type InputProps = {
+  fieldName: string;
+  onChange: (eventValue: string) => void;
+};
+
+const useStyles = makeStyles(theme => ({
+  textField: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1)
+  },
+  button: {
+    margin: theme.spacing(1)
+  }
+}));
+
+const SingleEntryInput: React.FC<InputProps> = ({ fieldName, onChange }) => {
+  const classes = useStyles("");
+  return (
+    <TextField
+      id="outlined-name"
+      label={fieldName}
+      className={classes.textField}
+      onChange={event => onChange(event.target.value)}
+      margin="normal"
+      variant="outlined"
+    />
+  );
+};
+
 const SAVE_TITAN = gql`
   mutation saveTitan(
     $name: String
@@ -39,22 +71,12 @@ export const Form: React.FC = props => {
   const [source, setSource] = useState("");
   const [quotes, setQuotes] = useState([]);
 
+  const classes = useStyles("");
+
   //Apollo Hook Mutations
   const [saveTitan, { data, loading }] = useMutation(SAVE_TITAN);
-  console.log(loading);
+
   const stateMachine = {
-    name: (value: string) => {
-      setName(value);
-    },
-    industry: (value: string) => {
-      setIndustry(value);
-    },
-    claimToFame: (value: string) => {
-      setClaimToFame(value);
-    },
-    source: (value: string) => {
-      setSource(value);
-    },
     quote: (message: string, index: number) => {
       const currQuotes = Array.from(quotes);
       currQuotes[index].message = message;
@@ -79,17 +101,24 @@ export const Form: React.FC = props => {
 
   const generateQuoteDivs = () => {
     return quotes.map((quote, i) => (
-      <div style={{ display: "flex", flexDirection: "row" }}>
-        <input
-          onChange={event => stateMachine.quote(event.target.value, i)}
-          type="text"
+      <div>
+        <TextField
+          id="outlined-name"
+          label={"Quote"}
           name={`quote${i}`}
+          className={classes.textField}
+          onChange={event => stateMachine.quote(event.target.value, i)}
+          margin="normal"
+          variant="outlined"
         />
-        <p>Hashtags</p>
-        <input
-          onChange={event => stateMachine.hashtag(event.target.value, i)}
-          type="text"
+        <TextField
+          id="outlined-name"
+          label={"Hashtags"}
           name={`hashtags${i}`}
+          className={classes.textField}
+          onChange={event => stateMachine.hashtag(event.target.value, i)}
+          margin="normal"
+          variant="outlined"
         />
       </div>
     ));
@@ -112,53 +141,103 @@ export const Form: React.FC = props => {
   };
 
   return (
-    <div>
-      <p>Name</p>
-      <input
-        onChange={event => stateMachine.name(event.target.value)}
-        type="text"
-        name="name"
-      />
-      <p>Industry</p>
-      <input
-        onChange={event => stateMachine.industry(event.target.value)}
-        type="text"
-        name="industry"
-      />
-      <p>Claim To Fame</p>
-      <input
-        onChange={event => stateMachine.claimToFame(event.target.value)}
-        type="text"
-        name="claimToFame"
-      />
-      <p>Source</p>
-      <input
-        onChange={event => stateMachine.source(event.target.value)}
-        type="text"
-        name="source"
-      />
-      <p>Quote</p>
-      <button onClick={() => addQuoteDiv()}>Add Anoter Quote</button>
-      {generateQuoteDivs()}
-      <button onClick={() => submitFormValues()}>Submit This Form</button>
-      <br />
-      <br />
-      <br />
-      {loading && !data ? <div>Cranking...</div> : null}
-      {data && data.saveTitan ? (
+    <>
+      <Paper
+        elevation={3}
+        style={{
+          width: "80%",
+          margin: "0 auto",
+          textAlign: "center",
+          marginTop: 50,
+          padding: 20
+        }}
+      >
+        <h1
+          style={{
+            width: "100%",
+            margin: "0 auto",
+            textAlign: "center",
+            color: "#979797",
+            fontFamily: "Roboto",
+            fontWeight: 600
+          }}
+        >
+          Data Entry
+        </h1>
+        <h3
+          style={{
+            width: "100%",
+            margin: "0 auto",
+            textAlign: "center",
+            color: "#979797",
+            fontFamily: "Roboto",
+            fontWeight: 600
+          }}
+        >
+          Please input data regarding a particular titan of industry
+        </h3>
         <div>
-          <h3>Successful Save</h3>
-          <Link
-            to={{
-              pathname: `/titans/${data.saveTitan.name}`,
-              state: { titan: data.saveTitan }
-            }}
-          >
-            {`Check out the bio of ${data.saveTitan.name}`}
-          </Link>
-          <p>{JSON.stringify(data.saveTitan)}</p>
+          <SingleEntryInput
+            fieldName={"Name"}
+            onChange={value => setName(value)}
+          />
         </div>
-      ) : null}
-    </div>
+        <div>
+          <SingleEntryInput
+            fieldName={"Industry"}
+            onChange={value => setIndustry(value)}
+          />
+          <SingleEntryInput
+            fieldName={"Claim To Fame"}
+            onChange={value => setClaimToFame(value)}
+          />
+          <SingleEntryInput
+            fieldName={"Source"}
+            onChange={value => setSource(value)}
+          />
+        </div>
+        <div>
+          <Button
+            variant="contained"
+            color="default"
+            className={classes.button}
+            onClick={() => addQuoteDiv()}
+          >
+            Add Quotes (+)
+          </Button>
+        </div>
+        {generateQuoteDivs()}
+        <br />
+        <br />
+        <br />
+        <Button
+          style={{ width: "50%", margin: "0 auto" }}
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          onClick={() => submitFormValues()}
+        >
+          Submit Form
+        </Button>
+        <br />
+        <br />
+        <br />
+        {loading && !data ? <div>Cranking...</div> : null}
+        {data && data.saveTitan ? (
+          <div>
+            <h3>Successful Save</h3>
+            <Link
+              to={{
+                pathname: `/titans/${data.saveTitan.name}`,
+                state: { titan: data.saveTitan }
+              }}
+            >
+              {`Check out the bio of ${data.saveTitan.name}`}
+            </Link>
+            <p>{JSON.stringify(data.saveTitan)}</p>
+          </div>
+        ) : null}
+      </Paper>
+    </>
   );
 };
