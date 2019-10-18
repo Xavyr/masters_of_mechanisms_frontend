@@ -7,11 +7,6 @@ import { useMutation } from "@apollo/react-hooks";
 import { TextField, Button, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-type InputProps = {
-  fieldName: string;
-  onChange: (eventValue: string) => void;
-};
-
 const useStyles = makeStyles(theme => ({
   textField: {
     marginLeft: theme.spacing(1),
@@ -22,10 +17,30 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const SingleEntryInput: React.FC<InputProps> = ({ fieldName, onChange }) => {
+type InputProps = {
+  fieldName: string;
+  onChange: (eventValue: string) => void;
+  multi?: boolean;
+};
+
+const ExtraSpace = () => (
+  <>
+    <br />
+    <br />
+    <br />
+  </>
+);
+
+const SingleEntryInput: React.FC<InputProps> = ({
+  fieldName,
+  onChange,
+  multi
+}) => {
   const classes = useStyles("");
   return (
     <TextField
+      multiline={multi}
+      rows={8}
       id="outlined-name"
       label={fieldName}
       className={classes.textField}
@@ -33,6 +48,32 @@ const SingleEntryInput: React.FC<InputProps> = ({ fieldName, onChange }) => {
       margin="normal"
       variant="outlined"
     />
+  );
+};
+
+const MultiEntryInput: React.FC<any> = ({
+  hookLabel,
+  hookDataStructure,
+  onClickCallback,
+  generateInputCallback
+}) => {
+  const classes = useStyles("");
+  return (
+    <>
+      <ExtraSpace />
+      <div>
+        <Button
+          variant="contained"
+          color="default"
+          className={classes.button}
+          onClick={() => onClickCallback(hookLabel, hookDataStructure)}
+        >
+          {`Add ${hookLabel} (+)`}
+        </Button>
+      </div>
+
+      {generateInputCallback(hookLabel)}
+    </>
   );
 };
 
@@ -69,73 +110,133 @@ export const Form: React.FC = props => {
   const [industry, setIndustry] = useState("");
   const [claimToFame, setClaimToFame] = useState("");
   const [source, setSource] = useState("");
+  const [bio, setBio] = useState("");
   const [quotes, setQuotes] = useState([]);
+  const [practices, setPractices] = useState([]);
+  const [paradigms, setParadigms] = useState([]);
+  const [routines, setRoutines] = useState([]);
+  const [inspirationals, setinspirationals] = useState([]);
 
   const classes = useStyles("");
 
-  //Apollo Hook Mutations
   const [saveTitan, { data, loading }] = useMutation(SAVE_TITAN);
 
-  const stateMachine = {
-    quote: (message: string, index: number) => {
-      const currQuotes = Array.from(quotes);
-      currQuotes[index].message = message;
-      setQuotes(currQuotes);
-    },
-    hashtag: (hashtags: string, index: number) => {
-      const currQuotes = Array.from(quotes);
-      currQuotes[index].hashtags = hashtags;
-      setQuotes(currQuotes);
+  const hookControlBoard = hook => {
+    switch (hook) {
+      case "quotes":
+        return { hookGetter: quotes, hookSetter: setQuotes };
+      case "practices":
+        return { hookGetter: practices, hookSetter: setPractices };
+      case "paradigms":
+        return { hookGetter: paradigms, hookSetter: setParadigms };
+      case "routines":
+        return { hookGetter: routines, hookSetter: setRoutines };
+      case "inspirationals":
+        return {
+          hookGetter: inspirationals,
+          hookSetter: setinspirationals
+        };
+
+      default:
+      // code block
     }
   };
 
-  const addQuoteDiv = () => {
-    const emptyQuote = {
-      message: "",
-      hashtags: ""
-    };
-    const currentQuotes = Array.from(quotes);
-    currentQuotes.push(emptyQuote);
-    setQuotes(currentQuotes);
+  const updateUserTyping = (hook, entity, value, index, setter) => {
+    const currData = [...hook];
+    currData[index][entity] = value;
+    setter(currData);
   };
 
-  const generateQuoteDivs = () => {
-    return quotes.map((quote, i) => (
-      <div>
-        <TextField
-          id="outlined-name"
-          label={"Quote"}
-          name={`quote${i}`}
-          className={classes.textField}
-          onChange={event => stateMachine.quote(event.target.value, i)}
-          margin="normal"
-          variant="outlined"
-        />
-        <TextField
-          id="outlined-name"
-          label={"Hashtags"}
-          name={`hashtags${i}`}
-          className={classes.textField}
-          onChange={event => stateMachine.hashtag(event.target.value, i)}
-          margin="normal"
-          variant="outlined"
-        />
-      </div>
-    ));
+  const pushEntityDivToHook = (entity: string, structure) => {
+    const currentData = [...hookControlBoard(entity).hookGetter];
+    const hookSetter = hookControlBoard(entity).hookSetter;
+    currentData.push(structure);
+    typeof hookSetter === "function" && hookSetter(currentData);
+  };
+
+  const generateMultiEntityInputs = label => {
+    const multilineEntities = {
+      story: true,
+      benefits: true,
+      background: true,
+      description: true
+    };
+    const hook = hookControlBoard(label);
+    const getter = hook.hookGetter;
+    const setter = hook.hookSetter;
+    return (
+      typeof hook === "object" &&
+      getter.map((quote, i) => {
+        const entities = Object.keys(quote);
+        return (
+          <div>
+            {entities.map(
+              entity =>
+                entity !== "titan" && (
+                  <TextField
+                    id="outlined-name"
+                    label={entity}
+                    name={`${entity}${i}`}
+                    className={classes.textField}
+                    onChange={event =>
+                      updateUserTyping(
+                        getter,
+                        entity,
+                        event.target.value,
+                        i,
+                        setter
+                      )
+                    }
+                    margin="normal"
+                    variant="outlined"
+                    multiline={multilineEntities[entity]}
+                    rows={8}
+                  />
+                )
+            )}
+          </div>
+        );
+      })
+    );
   };
 
   const submitFormValues = () => {
-    const cleanQuotes = quotes.map(quote => {
-      quote["titan"] = name;
-      return quote;
+    const cleanMultiInput = label =>
+      [...hookControlBoard(label).hookGetter].map(entity => {
+        entity["titan"] = name;
+        return entity;
+      });
+
+    const cleanQuotes = cleanMultiInput("quotes");
+    const cleanPractices = cleanMultiInput("practices");
+    const cleanParadigms = cleanMultiInput("paradigms");
+    const cleanRoutines = cleanMultiInput("routines");
+    const cleaninspirationals = cleanMultiInput("inspirationals");
+
+    console.log("CHECK IT", {
+      name,
+      industry,
+      claimToFame,
+      source,
+      bio,
+      quotes: cleanQuotes,
+      practices: cleanPractices,
+      paradigms: cleanParadigms,
+      routines: cleanRoutines,
+      inspirationals: cleaninspirationals
     });
+
     saveTitan({
       variables: {
         name,
         industry,
         claimToFame,
         source,
-        quotes: cleanQuotes
+        quotes: cleanQuotes,
+        practices: cleanPractices,
+        paradigms: cleanParadigms,
+        routines: cleanRoutines
       }
     });
   };
@@ -195,21 +296,60 @@ export const Form: React.FC = props => {
             fieldName={"Source"}
             onChange={value => setSource(value)}
           />
+          <div>
+            <SingleEntryInput
+              fieldName={"Bio"}
+              onChange={value => setBio(value)}
+              multi={true}
+            />
+          </div>
         </div>
-        <div>
-          <Button
-            variant="contained"
-            color="default"
-            className={classes.button}
-            onClick={() => addQuoteDiv()}
-          >
-            Add Quotes (+)
-          </Button>
-        </div>
-        {generateQuoteDivs()}
-        <br />
-        <br />
-        <br />
+        <MultiEntryInput
+          hookLabel={"quotes"}
+          hookDataStructure={{ message: "", hashtags: "" }}
+          onClickCallback={pushEntityDivToHook}
+          generateInputCallback={generateMultiEntityInputs}
+        />
+        <MultiEntryInput
+          hookLabel={"practices"}
+          hookDataStructure={{
+            practice: "",
+            description: "",
+            frequency: ""
+          }}
+          onClickCallback={pushEntityDivToHook}
+          generateInputCallback={generateMultiEntityInputs}
+        />
+        <MultiEntryInput
+          hookLabel={"paradigms"}
+          hookDataStructure={{
+            paradigm: "",
+            background: ""
+          }}
+          onClickCallback={pushEntityDivToHook}
+          generateInputCallback={generateMultiEntityInputs}
+        />
+        <MultiEntryInput
+          hookLabel={"routines"}
+          hookDataStructure={{
+            routine: "",
+            where: "",
+            when: "",
+            benefits: ""
+          }}
+          onClickCallback={pushEntityDivToHook}
+          generateInputCallback={generateMultiEntityInputs}
+        />
+        <MultiEntryInput
+          hookLabel={"inspirationals"}
+          hookDataStructure={{
+            source: "",
+            story: ""
+          }}
+          onClickCallback={pushEntityDivToHook}
+          generateInputCallback={generateMultiEntityInputs}
+        />
+        <ExtraSpace />
         <Button
           style={{ width: "50%", margin: "0 auto" }}
           variant="contained"
@@ -219,9 +359,7 @@ export const Form: React.FC = props => {
         >
           Submit Form
         </Button>
-        <br />
-        <br />
-        <br />
+        <ExtraSpace />
         {loading && !data ? <div>Cranking...</div> : null}
         {data && data.saveTitan ? (
           <div>
