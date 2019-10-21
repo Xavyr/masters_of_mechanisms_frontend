@@ -84,6 +84,10 @@ const SAVE_TITAN = gql`
     $claimToFame: String
     $source: String
     $quotes: [QuoteInput]
+    $practices: [PracticeInput]
+    $paradigms: [ParadigmInput]
+    $inspirationals: [InspirationalInput]
+    $routines: [RoutineInput]
   ) {
     saveTitan(
       name: $name
@@ -91,26 +95,58 @@ const SAVE_TITAN = gql`
       claimToFame: $claimToFame
       source: $source
       quotes: $quotes
+      practices: $practices
+      paradigms: $paradigms
+      inspirationals: $inspirationals
+      routines: $routines
     ) {
+      _id
       name
       industry
       claimToFame
-      source
       quotes {
+        _id
+        titan
         message
         hashtags
-        titan
       }
+      practices {
+        _id
+        titan
+        practice
+        frequency
+        description
+      }
+      paradigms {
+        _id
+        titan
+        paradigm
+        background
+      }
+      inspirationals {
+        _id
+        titan
+        story
+        source
+      }
+      routines {
+        _id
+        what
+        where
+        when
+        benefits
+      }
+      source
     }
   }
 `;
 
 export const Form: React.FC = props => {
-  const [name, setName] = useState("");
-  const [industry, setIndustry] = useState("");
-  const [claimToFame, setClaimToFame] = useState("");
-  const [source, setSource] = useState("");
-  const [bio, setBio] = useState("");
+  const [name, setName] = useState("x");
+  const [industry, setIndustry] = useState("i");
+  const [claimToFame, setClaimToFame] = useState("c");
+  const [source, setSource] = useState("s");
+  const [bio, setBio] = useState("b");
   const [quotes, setQuotes] = useState([]);
   const [practices, setPractices] = useState([]);
   const [paradigms, setParadigms] = useState([]);
@@ -119,7 +155,8 @@ export const Form: React.FC = props => {
 
   const classes = useStyles("");
 
-  const [saveTitan, { data, loading }] = useMutation(SAVE_TITAN);
+  const [saveTitan, { data, error, loading }] = useMutation(SAVE_TITAN);
+  console.log(error);
 
   const hookControlBoard = hook => {
     switch (hook) {
@@ -233,10 +270,12 @@ export const Form: React.FC = props => {
         industry,
         claimToFame,
         source,
+        bio,
         quotes: cleanQuotes,
         practices: cleanPractices,
         paradigms: cleanParadigms,
-        routines: cleanRoutines
+        routines: cleanRoutines,
+        inspirationals: cleaninspirationals
       }
     });
   };
@@ -335,6 +374,7 @@ export const Form: React.FC = props => {
             routine: "",
             where: "",
             when: "",
+            what: "",
             benefits: ""
           }}
           onClickCallback={pushEntityDivToHook}
