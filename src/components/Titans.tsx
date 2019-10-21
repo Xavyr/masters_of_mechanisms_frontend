@@ -12,8 +12,33 @@ const GET_TITANS = gql`
       claimToFame
       quotes {
         _id
+        titan
         message
         hashtags
+      }
+      paradigms {
+        _id
+        titan
+        background
+        paradigm
+      }
+      practices {
+        _id
+        titan
+        practice
+        frequency
+        description
+      }
+      routines {
+        _id
+        what
+        when
+        where
+        benefits
+      }
+      inspirationals {
+        story
+        source
       }
       source
     }

@@ -123,12 +123,6 @@ const SAVE_TITAN = gql`
         paradigm
         background
       }
-      inspirationals {
-        _id
-        titan
-        story
-        source
-      }
       routines {
         _id
         what
@@ -136,17 +130,23 @@ const SAVE_TITAN = gql`
         when
         benefits
       }
+      inspirationals {
+        _id
+        titan
+        story
+        source
+      }
       source
     }
   }
 `;
 
 export const Form: React.FC = props => {
-  const [name, setName] = useState("x");
-  const [industry, setIndustry] = useState("i");
-  const [claimToFame, setClaimToFame] = useState("c");
-  const [source, setSource] = useState("s");
-  const [bio, setBio] = useState("b");
+  const [name, setName] = useState();
+  const [industry, setIndustry] = useState();
+  const [claimToFame, setClaimToFame] = useState();
+  const [source, setSource] = useState();
+  const [bio, setBio] = useState();
   const [quotes, setQuotes] = useState([]);
   const [practices, setPractices] = useState([]);
   const [paradigms, setParadigms] = useState([]);
@@ -156,7 +156,6 @@ export const Form: React.FC = props => {
   const classes = useStyles("");
 
   const [saveTitan, { data, error, loading }] = useMutation(SAVE_TITAN);
-  console.log(error);
 
   const hookControlBoard = hook => {
     switch (hook) {
@@ -249,7 +248,7 @@ export const Form: React.FC = props => {
     const cleanPractices = cleanMultiInput("practices");
     const cleanParadigms = cleanMultiInput("paradigms");
     const cleanRoutines = cleanMultiInput("routines");
-    const cleaninspirationals = cleanMultiInput("inspirationals");
+    const cleanInspirationals = cleanMultiInput("inspirationals");
 
     console.log("CHECK IT", {
       name,
@@ -261,7 +260,7 @@ export const Form: React.FC = props => {
       practices: cleanPractices,
       paradigms: cleanParadigms,
       routines: cleanRoutines,
-      inspirationals: cleaninspirationals
+      inspirationals: cleanInspirationals
     });
 
     saveTitan({
@@ -274,8 +273,8 @@ export const Form: React.FC = props => {
         quotes: cleanQuotes,
         practices: cleanPractices,
         paradigms: cleanParadigms,
-        routines: cleanRoutines,
-        inspirationals: cleaninspirationals
+        inspirationals: cleanInspirationals,
+        routines: cleanRoutines
       }
     });
   };
