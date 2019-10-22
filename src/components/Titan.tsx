@@ -20,7 +20,19 @@ type Props = any;
 
 export const Titan: React.FC = (props: Props) => {
   const { titan } = props.location.state;
-  const { _id, name, industry, claimToFame, quotes, source } = titan;
+  const {
+    _id,
+    name,
+    industry,
+    claimToFame,
+    quotes,
+    source,
+    bio,
+    paradigms,
+    practices,
+    routines,
+    inspirationals
+  } = titan;
   console.log("titan", titan);
   return (
     <div>
@@ -28,13 +40,53 @@ export const Titan: React.FC = (props: Props) => {
       <p>{`name- ${name}`}</p>
       <p>{`industry- ${industry}`}</p>
       <p>{`claimToFame- ${claimToFame}`}</p>
+      <p>{`source- ${bio}`}</p>
       <p>{`source- ${source}`}</p>
-      {quotes.map((quote, index) => (
-        <div>
-          <p>{`quote #${index}- ${quote.message}`}</p>
-          <p>{`quote #${index} hashtags- ${JSON.stringify(quote.hashtags)}`}</p>
-        </div>
-      ))}
+      {quotes &&
+        quotes.map((quote, index) => (
+          <div>
+            <p>{`quote #${index}- ${quote.message}`}</p>
+            <p>{`quote #${index} hashtags- ${JSON.stringify(
+              quote.hashtags
+            )}`}</p>
+          </div>
+        ))}
+      {practices &&
+        practices.map((quote, index) => (
+          <div>
+            <p>{`quote #${index}- ${quote.message}`}</p>
+            <p>{`quote #${index} hashtags- ${JSON.stringify(
+              quote.hashtags
+            )}`}</p>
+          </div>
+        ))}
+      {paradigms &&
+        paradigms.map((quote, index) => (
+          <div>
+            <p>{`quote #${index}- ${quote.message}`}</p>
+            <p>{`quote #${index} hashtags- ${JSON.stringify(
+              quote.hashtags
+            )}`}</p>
+          </div>
+        ))}
+      {routines &&
+        routines.map((quote, index) => (
+          <div>
+            <p>{`quote #${index}- ${quote.message}`}</p>
+            <p>{`quote #${index} hashtags- ${JSON.stringify(
+              quote.hashtags
+            )}`}</p>
+          </div>
+        ))}
+      {inspirationals &&
+        inspirationals.map((quote, index) => (
+          <div>
+            <p>{`quote #${index}- ${quote.message}`}</p>
+            <p>{`quote #${index} hashtags- ${JSON.stringify(
+              quote.hashtags
+            )}`}</p>
+          </div>
+        ))}
     </div>
   );
 };
