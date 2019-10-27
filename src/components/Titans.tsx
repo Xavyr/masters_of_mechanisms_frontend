@@ -10,6 +10,7 @@ const GET_TITANS = gql`
       name
       industry
       claimToFame
+      bio
       quotes {
         _id
         titan

@@ -6,6 +6,13 @@ import { useMutation } from "@apollo/react-hooks";
 
 import { TextField, Button, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import {
+  cleanQuotes,
+  cleanPractices,
+  cleanParadigms,
+  cleanRoutines,
+  cleanInspirationals
+} from "../utils/formDataUtils";
 
 const useStyles = makeStyles(theme => ({
   textField: {
@@ -238,29 +245,19 @@ export const Form: React.FC = props => {
   };
 
   const submitFormValues = () => {
-    const cleanMultiInput = label =>
-      [...hookControlBoard(label).hookGetter].map(entity => {
-        entity["titan"] = name;
-        return entity;
-      });
+    if (!name) return null;
 
-    const cleanQuotes = cleanMultiInput("quotes");
-    const cleanPractices = cleanMultiInput("practices");
-    const cleanParadigms = cleanMultiInput("paradigms");
-    const cleanRoutines = cleanMultiInput("routines");
-    const cleanInspirationals = cleanMultiInput("inspirationals");
-
-    console.log("CHECK IT", {
+    console.log("check Data being saved", {
       name,
       industry,
       claimToFame,
       source,
       bio,
-      quotes: cleanQuotes,
-      practices: cleanPractices,
-      paradigms: cleanParadigms,
-      routines: cleanRoutines,
-      inspirationals: cleanInspirationals
+      quotes: cleanQuotes(quotes, name),
+      practices: cleanPractices(practices, name),
+      paradigms: cleanParadigms(paradigms, name),
+      routines: cleanRoutines(routines, name),
+      inspirationals: cleanInspirationals(inspirationals, name)
     });
 
     saveTitan({
@@ -270,11 +267,11 @@ export const Form: React.FC = props => {
         claimToFame,
         source,
         bio,
-        quotes: cleanQuotes,
-        practices: cleanPractices,
-        paradigms: cleanParadigms,
-        inspirationals: cleanInspirationals,
-        routines: cleanRoutines
+        quotes: cleanQuotes(quotes, name),
+        practices: cleanPractices(practices, name),
+        paradigms: cleanParadigms(paradigms, name),
+        routines: cleanRoutines(routines, name),
+        inspirationals: cleanInspirationals(inspirationals, name)
       }
     });
   };
@@ -373,7 +370,6 @@ export const Form: React.FC = props => {
             routine: "",
             where: "",
             when: "",
-            what: "",
             benefits: ""
           }}
           onClickCallback={pushEntityDivToHook}
