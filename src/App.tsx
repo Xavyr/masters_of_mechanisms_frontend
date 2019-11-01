@@ -17,6 +17,7 @@ import { Titans } from "./components/Titans";
 import { Titan } from "./components/Titan";
 import { Form } from "./components/Form";
 import { DataVisualizations } from "./components/DataVisualizations";
+import { relative } from "path";
 
 const cache = new InMemoryCache();
 const link = new HttpLink({

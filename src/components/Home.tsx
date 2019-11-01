@@ -1,28 +1,17 @@
 import * as React from "react";
-import lightbulbs from "../images/lightbulbs.svg";
+import { Lightbulbs } from "../images/jsx/Lightbulbs";
 import { Route, BrowserRouter, Link } from "react-router-dom";
 import { Titans } from "./Titans";
 import "../App.css";
 
 export const Home: React.FC = ({}) => {
+  console.log(Lightbulbs);
   return (
-    <div
-      style={{
-        alignItems: "center"
-      }}
-    >
+    <>
       <Link to={`/Titans`}>
-        <img
-          src={lightbulbs}
-          alt="lightbulbs-logo"
-          style={{
-            width: "100%",
-            height: 700,
-            // maxHeight: 700,
-            margin: "0 auto",
-            alignItems: "center"
-          }}
-        />
+        <div style={{ position: "relative", top: -10 }}>
+          <Lightbulbs color={"blue"} width={"100%"} height={800} />
+        </div>
       </Link>
       <h1
         style={{
@@ -36,7 +25,6 @@ export const Home: React.FC = ({}) => {
       >
         Break the block and <br /> find your inspiration.
       </h1>
-      <div></div>
-    </div>
+    </>
   );
 };
